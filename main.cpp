@@ -2,6 +2,7 @@
 
 #include "Logger.h"
 #include "TaskQueue.h"
+#include "ThreadPool.h"
 
 using namespace std;
 
@@ -20,14 +21,20 @@ long long runFibonacci(int i) {
 };
 
 int main() {
-    TaskQueue<FibonacciTask> fibonacciTasks;
-    fibonacciTasks.add([]() { return runFibonacci(20); });
-    fibonacciTasks.add([]() { return runFibonacci(21); });
-    fibonacciTasks.add([]() { return runFibonacci(22); });
-    while (fibonacciTasks.size()) {
-        auto task = fibonacciTasks.get();
-        task();
+    {
+        TaskQueue<FibonacciTask> fibonacciTasks;
+        fibonacciTasks.add([]() { return runFibonacci(20); });
+        fibonacciTasks.add([]() { return runFibonacci(21); });
+        fibonacciTasks.add([]() { return runFibonacci(22); });
+        while (fibonacciTasks.size()) {
+            auto task = fibonacciTasks.get();
+            task();
+        }
     }
-
+    {
+        TaskQueue<FibonacciTask> fibonacciTasks;
+        ThreadPool threadPool(4, fibonacciTasks);
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+    }
     return 0;
 }
