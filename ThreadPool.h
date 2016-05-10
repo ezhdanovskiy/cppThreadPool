@@ -24,15 +24,13 @@ public:
                 while (!stopFlag) {
                     std::this_thread::sleep_for(std::chrono::milliseconds(10));
                     Task task;
-                    bool emptyTask = true;
                     {
                         std::unique_lock<std::mutex> lock(tasksMutex);
                         if (tasks.size()) {
                             task = tasks.get();
-                            emptyTask = false;
                         }
                     }
-                    if (!emptyTask) {
+                    if (task) {
                         task();
                     }
                 }

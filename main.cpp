@@ -22,10 +22,17 @@ long long runFibonacci(int i) {
 
 int main() {
     TaskQueue<FibonacciTask> fibonacciTasks;
-    for (int i = 41; i > 0; --i) {
+    for (int i = 42; i > 38; --i) {
         fibonacciTasks.add([i]() { return runFibonacci(i); });
     }
+
     ThreadPool<FibonacciTask> threadPool(4, fibonacciTasks);
-    std::this_thread::sleep_for(std::chrono::seconds(4));
+
+    for (int j = 0; j < 5; ++j) {
+        for (int i = 35; i > 20; --i) {
+            fibonacciTasks.add([i]() { return runFibonacci(i); });
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
     return 0;
 }
