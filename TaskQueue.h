@@ -10,10 +10,12 @@ class TaskQueue {
 
 public:
     void add(const Task &task) {
+//        LOG("TaskQueue::" << __func__);
         tasks.push(task);
     }
 
     Task get() {
+//        LOG("TaskQueue::" << __func__);
         Task task = tasks.front();
         tasks.pop();
         return task;

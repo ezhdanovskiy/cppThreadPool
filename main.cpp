@@ -21,20 +21,11 @@ long long runFibonacci(int i) {
 };
 
 int main() {
-    {
-        TaskQueue<FibonacciTask> fibonacciTasks;
-        fibonacciTasks.add([]() { return runFibonacci(20); });
-        fibonacciTasks.add([]() { return runFibonacci(21); });
-        fibonacciTasks.add([]() { return runFibonacci(22); });
-        while (fibonacciTasks.size()) {
-            auto task = fibonacciTasks.get();
-            task();
-        }
+    TaskQueue<FibonacciTask> fibonacciTasks;
+    for (int i = 41; i > 0; --i) {
+        fibonacciTasks.add([i]() { return runFibonacci(i); });
     }
-    {
-        TaskQueue<FibonacciTask> fibonacciTasks;
-        ThreadPool threadPool(4, fibonacciTasks);
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-    }
+    ThreadPool<FibonacciTask> threadPool(4, fibonacciTasks);
+    std::this_thread::sleep_for(std::chrono::seconds(4));
     return 0;
 }
