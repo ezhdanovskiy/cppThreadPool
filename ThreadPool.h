@@ -17,7 +17,7 @@ class ThreadPool {
 
 public:
     ThreadPool(const size_t threadCnt, TTaskQueue &taskQueue) : tasks(taskQueue), stopFlag(false) {
-        LOG(__func__ << " start");
+        LOG(__func__ << " Ctor start");
         for (size_t threadId = 0; threadId < threadCnt; ++threadId) {
             workers.emplace_back(std::thread([this, threadId]() {
                 LOG("worker(" << threadId << ") start");
@@ -31,13 +31,13 @@ public:
                         }
                     }
                     if (task) {
-                        task();
+                        task(threadId);
                     }
                 }
                 LOG("worker(" << threadId << ") end");
             }));
         }
-        LOG(__func__ << " end");
+        LOG(__func__ << " Ctor end");
     }
 
     ~ThreadPool() {
@@ -45,6 +45,7 @@ public:
         for (std::thread &worker : workers) {
             worker.join();
         }
+        LOG(__func__ << " end");
     }
 };
 
